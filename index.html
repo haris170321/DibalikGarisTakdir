@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Di Balik Garis Hari Ini - Karya Haris</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cinzel, Playfair Display, Inter, & Lora) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        amber: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            800: '#92400e',
+                            900: '#78350f',
+                            950: '#451a03',
+                        },
+                        sand: {
+                            50: '#fdfbf7',
+                            100: '#f7f3eb',
+                            200: '#ede5d8',
+                            800: '#3d3429',
+                            900: '#211c16',
+                        },
+                        twilight: {
+                            900: '#121118',
+                            950: '#0b0a0f',
+                        }
+                    },
+                    fontFamily: {
+                        title: ['Cinzel', 'serif'],
+                        serif: ['Lora', 'serif'],
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(180, 140, 90, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(180, 140, 90, 0.7);
+        }
+        .sepia-mode {
+            background-color: #f4ecd8 !important;
+            color: #433422 !important;
+        }
+        .sepia-mode .card-bg {
+            background-color: #e8decf !important;
+            border-color: #d8c8b0 !important;
+        }
+        .text-glow {
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-sand-50 text-sand-800 dark:bg-twilight-950 dark:text-stone-300 font-sans transition-colors duration-500 min-h-screen flex flex-col">
+
+    <!-- Reading Progress Bar -->
+    <div id="progress-container" class="fixed top-0 left-0 w-full h-1 bg-amber-900/10 z-50">
+        <div id="progress-bar" class="h-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 w-0 transition-all duration-150"></div>
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-sand-50/80 dark:bg-twilight-950/80 border-b border-amber-900/10 dark:border-amber-500/10 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#" class="font-title font-bold text-lg md:text-xl tracking-wider text-amber-900 dark:text-amber-400 hover:opacity-80 transition-opacity">
+                3 Tahun Dibalik Garis Takdi
+            </a>
+
+         
+
+                <!-- Theme / Reading Mode Options -->
+                <div class="flex items-center bg-sand-200/60 dark:bg-stone-900 p-1 rounded-full text-xs">
+                    <button id="theme-light" class="w-7 h-7 rounded-full flex items-center justify-center text-amber-900 dark:text-stone-400 hover:text-amber-600 transition-colors" title="Mode Terang">
+                        <i class="fa-solid fa-sun"></i>
+                    </button>
+                    <button id="theme-sepia" class="w-7 h-7 rounded-full flex items-center justify-center text-amber-900 dark:text-stone-400 hover:text-amber-600 transition-colors" title="Mode Sepia">
+                        <i class="fa-solid fa-book-open"></i>
+                    </button>
+                    <button id="theme-dark" class="w-7 h-7 rounded-full flex items-center justify-center text-amber-900 dark:text-amber-400 hover:text-amber-600 transition-colors" title="Mode Gelap">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MUSIC PLAYER WIDGET BAR -->
+    <div id="music-widget" class="bg-amber-950/95 text-amber-100 border-b border-amber-500/30 px-4 py-3 transition-all duration-300">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- Song Title Display & Selector -->
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="w-10 h-10 rounded-lg bg-amber-800/60 border border-amber-500/40 flex items-center justify-center text-amber-300 text-lg flex-shrink-0">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+                <div class="flex-grow">
+                    <p class="text-[10px] uppercase font-mono tracking-wider text-amber-400/80">Latar Musik Novel</p>
+                    <select id="song-select" onchange="changeTrack(this.value)" class="bg-amber-900/80 border border-amber-600/40 text-amber-100 text-xs md:text-sm rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-400 w-full md:w-64 font-medium">
+                        <option value="virgoun">Virgoun ft. Audy - Selamat (Selamat Tinggal)</option>
+                        <option value="forrevenge">For Revenge ft. Stereo Wall - Jakarta Hari Ini</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- YouTube Embedded Audio Player -->
+            <div class="w-full md:w-auto flex items-center justify-center">
+                <div id="youtube-player-container" class="rounded-xl overflow-hidden shadow-lg border border-amber-600/30 bg-black/40">
+                    <iframe id="yt-audio-frame" class="w-full md:w-[320px] h-[80px]" src="https://www.youtube.com/embed/nnZpgbJQVXw?enablejsapi=1" title="Background Music Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="flex-grow">
+        
+        <!-- SECTION 1: HERO & COVER -->
+        <section class="relative min-h-[85vh] flex items-center justify-center py-12 px-4 overflow-hidden border-b border-amber-900/10 dark:border-amber-500/10">
+            <!-- Ambient Gradient Background -->
+            <div class="absolute inset-0 opacity-30 dark:opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-300 via-stone-300 to-transparent dark:from-amber-900 dark:via-twilight-900 dark:to-transparent pointer-events-none"></div>
+
+            <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative z-10">
+                <!-- Illustration Frame -->
+                <div class="md:col-span-6 lg:col-span-5 flex justify-center">
+                    <div class="relative group max-w-sm w-full rounded-2xl overflow-hidden shadow-2xl border-4 border-amber-900/10 dark:border-amber-500/20 bg-stone-900 transition-transform duration-500 hover:scale-[1.01]">
+                        <!-- Image Container with soft lighting effect -->
+                        <div class="relative aspect-[9/16] w-full overflow-hidden">
+                            <img id="hero-img" src="Merah dan Kuning Modern Mencari Novel Sampul Buku.png" alt="Ilustrasi Di Balik Garis Hari Ini" class="w-full h-full object-cover object-center transform transition-transform duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-transparent"></div>
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4 text-center">
+                            <p class="text-xs font-serif italic text-amber-200/80">"Tentang cinta, kehilangan, dan doa yang tetap tinggal..."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Novel Meta & Title -->
+                <div class="md:col-span-6 lg:col-span-7 text-center md:text-left space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-600/20 text-amber-800 dark:text-amber-400 text-xs font-medium uppercase tracking-widest">
+                        <i class="fa-solid fa-feather-pointed"></i> Novel Digital Interaktif
+                    </div>
+                    
+                    <h1 class="font-title text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-amber-950 dark:text-amber-100 leading-tight">
+                        3 Tahun Dibalik Garis Takdir
+                    </h1>
+                    
+                    <p class="font-serif italic text-lg sm:text-xl text-stone-600 dark:text-stone-300 font-light border-l-2 border-amber-600/40 pl-4 py-1">
+                        "Sebuah Kisah Nyata tentang Cinta, Kehilangan, dan Doa"
+                    </p>
+
+                    <div class="pt-2 text-sm text-stone-500 dark:text-stone-400">
+                        Ditulis dengan ketulusan oleh <span class="font-semibold text-amber-900 dark:text-amber-400">Haris (Gendut)</span>
+                    </div>
+
+                    <p class="text-sm sm:text-base text-stone-600 dark:text-stone-400 leading-relaxed font-sans max-w-xl">
+                        Catatan perjalanan Haris dan Nadia — dari boncengan pertama dengan motor Beat, papeda pinggir jalan, kehangatan keluarga, hujan di Jember, hingga doa yang terucap pada 22 Oktober 2026.
+                    </p>
+
+                    <!-- CTA Actions -->
+                    <div class="pt-4 flex flex-wrap gap-4 justify-center md:justify-start">
+                        <a href="#reader-section" onclick="openChapter(0)" class="px-6 py-3 rounded-xl bg-amber-800 hover:bg-amber-900 text-amber-50 font-medium text-sm transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open"></i> Mulai Membaca
+                        </a>
+                        <a href="#scrapbook" class="px-6 py-3 rounded-xl border border-amber-800/30 hover:bg-amber-500/10 text-amber-900 dark:text-amber-300 font-medium text-sm transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-images"></i> Galeri Kenangan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: CHAPTER READER SECTION -->
+        <section id="reader-section" class="py-12 max-w-6xl mx-auto px-4">
+            <div class="text-center mb-8">
+                <span class="text-xs uppercase font-semibold text-amber-700 dark:text-amber-400 tracking-widest">Ruang Baca</span>
+                <h2 class="font-title text-2xl md:text-3xl font-bold text-amber-950 dark:text-stone-100">Daftar Bab Novel</h2>
+            </div>
+
+            <!-- Main Reader Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Sidebar Navigation (Chapters List) -->
+                <div class="lg:col-span-4 bg-sand-100 dark:bg-stone-900/60 rounded-2xl p-4 border border-amber-900/10 dark:border-stone-800 sticky top-20">
+                    <h3 class="font-title font-semibold text-sm uppercase tracking-wider text-amber-900 dark:text-amber-400 pb-3 mb-3 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between">
+                        <span>Daftar Bab</span>
+                        <span id="reading-time-est" class="text-xs font-normal text-stone-500"><i class="fa-regular fa-clock"></i> ~12 mnt</span>
+                    </h3>
+                    <div class="space-y-2" id="chapter-list">
+                        <!-- Rendered by JS -->
+                    </div>
+
+                    <!-- Reader Controls -->
+                    <div class="mt-6 pt-4 border-t border-stone-200 dark:border-stone-800 space-y-3">
+                        <div class="flex items-center justify-between text-xs text-stone-600 dark:text-stone-400">
+                            <span>Ukuran Teks</span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="adjustFontSize(-1)" class="w-6 h-6 rounded bg-sand-200 dark:bg-stone-800 flex items-center justify-center hover:bg-amber-500/20 font-bold">-</button>
+                                <span id="font-size-label" class="font-mono">100%</span>
+                                <button onclick="adjustFontSize(1)" class="w-6 h-6 rounded bg-sand-200 dark:bg-stone-800 flex items-center justify-center hover:bg-amber-500/20 font-bold">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Display -->
+                <div class="lg:col-span-8 bg-white dark:bg-stone-900/90 rounded-2xl p-6 md:p-10 shadow-sm border border-stone-200 dark:border-stone-800 relative min-h-[500px]" id="reader-card">
+                    <!-- Chapter Header -->
+                    <div class="border-b border-stone-200 dark:border-stone-800 pb-6 mb-8 text-center md:text-left">
+                        <span id="current-chapter-num" class="text-xs font-mono font-semibold uppercase text-amber-700 dark:text-amber-400 tracking-wider">Bab 1</span>
+                        <h2 id="current-chapter-title" class="font-display text-2xl md:text-3xl font-bold text-amber-950 dark:text-amber-100 mt-1">
+                            Boncengan Pertama & 17 Maret
+                        </h2>
+                        <div class="text-xs text-stone-500 dark:text-stone-400 mt-2 flex items-center justify-center md:justify-start gap-4">
+                            <span><i class="fa-solid fa-calendar-day mr-1"></i> <span id="current-chapter-date">17 Maret 2020</span></span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i> <span id="current-chapter-location">Awal Cerita</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Chapter Content Container -->
+                    <div id="chapter-content-text" class="font-serif text-stone-800 dark:text-stone-200 leading-relaxed space-y-6 text-base md:text-lg transition-all">
+                        <!-- Content inserted via JS -->
+                    </div>
+
+                    <!-- Bottom Chapter Navigation Controls -->
+                    <div class="mt-12 pt-6 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between">
+                        <button id="prev-btn" onclick="prevChapter()" class="px-4 py-2 rounded-lg border border-stone-300 dark:border-stone-700 text-xs md:text-sm font-medium hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-40 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-left"></i> Bab Sebelumnya
+                        </button>
+                        <span id="page-indicator" class="text-xs text-stone-500 font-mono">1 / 5</span>
+                        <button id="next-btn" onclick="nextChapter()" class="px-4 py-2 rounded-lg bg-amber-800 text-amber-50 text-xs md:text-sm font-medium hover:bg-amber-900 disabled:opacity-40 transition-all flex items-center gap-2">
+                            Bab Selanjutnya <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: DIGITAL SCRAPBOOK / MEMORY GALLERY -->
+        <section id="scrapbook" class="py-16 bg-sand-100/60 dark:bg-stone-900/40 border-y border-amber-900/10 dark:border-amber-500/10">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-xs uppercase font-semibold text-amber-700 dark:text-amber-400 tracking-widest">Digital Scrapbook</span>
+                    <h2 class="font-title text-2xl md:text-3xl font-bold text-amber-950 dark:text-stone-100 mt-1">Galeri Jejak Kenangan</h2>
+                    <p class="text-sm text-stone-600 dark:text-stone-400 mt-2 font-serif italic">
+                        "Setiap momen sederhana yang diukir bersama, menjadi kepingan takdir yang tak lekang oleh waktu."
+                    </p>
+                </div>
+
+                <!-- Memory Grid Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="memory-cards-grid">
+                    <!-- JS Populated -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-amber-900/10 dark:border-amber-500/10 py-8 bg-sand-100 dark:bg-twilight-900 text-center text-xs text-stone-500 dark:text-stone-400">
+        <div class="max-w-4xl mx-auto px-4 space-y-2">
+            <p class="font-title text-sm font-semibold text-amber-900 dark:text-amber-400">DI BALIK GARIS HARI INI</p>
+            <p class="font-serif italic">"Sebab rindu paling tenang adalah doa yang dipeluk oleh keikhlasan."</p>
+            <p class="pt-4 text-stone-400 dark:text-stone-600">&copy; 2026 Ditulis oleh Haris. Hak cipta dilindungi.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ----------------------------------------------------
+           1. CHAPTER DATA (Novel Content)
+        ---------------------------------------------------- */
+        const chaptersData = [
+    {
+        "id": 1,
+        "title": "Boncengan Pertama dan Tanggal 17 Maret",
+        "date": "17 Maret 2020",
+        "location": "Awal Mula Perjalanan",
+        "content": "<p>Ada orang yang bilang bahwa cinta pertama jarang sekali bertahan. Tapi bagiku, gadis yang kulihat di bangku kelas satu SMP itu bukan sekadar cinta pertama. Dia adalah tempatku pulang, alasan di balik setiap usaha keras yang kulakukan, dan separuh dari jalan hidup yang pernah kurancang dengan sangat rapi.</p>\n<p>Namanya Nadia.</p>\n<p>Pertama kali mengenal Nadia di kelas 7 SMP, perhatianku langsung tersita sepenuhnya. Dia sosok yang begitu ceria, suka bercanda, usil, dan senyumnya selalu sanggup menghidupkan suasana kelas. Di mataku, Nadia adalah definisi kecantikan yang sempurna dan lucu.</p>\n<p>Tapi saat itu, aku hanya seorang Haris—anak laki-laki berkulit gelap, kusam, berambut botak, dan wajahnya dipenuhi jerawat. Setiap kali melihat ke cermin, rasa minder itu langsung menampar sadar.</p>\n<p>_“Masa iya cewek secantik Nadia mau sama cowok kayak aku?”_&#x20;bisikku dalam hati.</p>\n<p>Akhirnya, aku memilih untuk memendam perasaan itu. Selama lebih dari satu setengah tahun, dari kelas 7 hingga pertengahan kelas 8, aku hanya bisa menjadi penonton dari jauh. Menatapnya tertawa, bahkan menyaksikan dia dekat dengan cowok lain. Rasa cemburu itu tentu ada dan sering kali menyesakkan dada, tapi aku tahu diri: saat itu aku bukan siapa-siapa.</p>\n<p>Sampai akhirnya, akhir kelas 8 SMP tiba. Pandemi COVID-19 melanda, dan sekolah mendadak diliburkan total.</p>\n<p>Sebagai pengurus OSIS, aku mendapat tugas dari guru untuk membuat video perkenalan sekolah bagi siswa baru. Masalahnya, OSIS saat itu kekurangan anggota yang bisa menari. Saat diskusi kebuntuan itu terjadi, satu nama langsung melintas di kepalaku: Nadia.</p>\n<p>Dengan keberanian yang kupaksa-paksakan, aku mengusulkan nama Nadia sebagai <em>talent</em> tari. Setelah disetujui, jariku gemetar saat mengetik pesan untuk mendadak menghubunginya, meminta tolong agar dia mau membantuku dalam pembuatan video tersebut.</p>\n<p>Luar biasanya, dia mengiyakan. Tapi masalah baru muncul: Nadia tidak ada yang mau mneghantarkannya untuk pergi ke sekolah.</p>\n<p>“Ya udah, biar aku yang jemput kamu, Nad,” tulisku di pesan balasan.</p>\n<p>Hari itu menjadi sejarah kecil dalam hidupku. Untuk pertama kalinya, Nadia duduk di jok belakang motor Beat-ku. Angin pagi menusuk kulit, tapi dadaku terasa hangat luar biasa. Perasaan yang selama ini kupendam rapat-rapar mendadak bergemuruh kembali, jauh lebih kencang dari sebelumnya. Dari momen sederhana di atas motor Beat itu, aku bertekad untuk tidak lagi bersembunyi di balik rasa minder.</p>\n<p>Usahaku untuk mendekatinya sama sekali tidak mudah. Sainganku tidak main-main—kakak-kakak kelas yang tampan dan populer juga sedang gencar mendekatinya. Tapi takdir seolah mulai membukakan jalan.</p>\n<p>Sekolah mengadakan program kerja (proker) belajar keliling kampung, dan secara kebetulan aku dan Nadia dimasukkan ke dalam kelompok yang sama. Setiap kali jadwal keliling kampung tiba, kami selalu jalan berdua.</p>\n<p>Hingga di hari terakhir proker tersebut, saat kami dalam perjalanan pulang di atas motor, aku memutuskan bahwa hari ini adalah harinya. Aku tidak boleh ragu lagi.</p>\n<p>“Eh Nad, ada yang mau aku sampein, boleh enggak?” tanyaku memecah angin jalanan.</p>\n<p>Nadia menoleh sedikit dari belakang. “Hah, mau sampein apa emang? Ngomong aja lah, gausah sungkan-sungkan!”</p>\n<p>Jantungku berdegup kencang, pegangan tanganku di stang motor terasa makin erat.</p>\n<p>“Maaf ya sebelumnya... Sebenarnya aku nyimpen rasa sama kamu dari waktu kita kelas 7 SMP. Tapi aku baru berani <em>confess</em> hari ini, kemarin-kemarin masih minder, wkwk.”</p>\n<p>Nadia tertawa kecil, suara tawanya terdengar lucu. “Dihh... Tiba-tiba banget nih <em>confess</em> ke aku di jalan mau pulang! Kenapa enggak dari dulu aja sih ngungkapinnya? Kenapa harus minder kemarin? Udah, mau ngomong gitu doang kah? Ga ada yang lain?”</p>\n<p>“Ada sih lagi... Tapi kalau boleh jujur, btw kalau aku nembak kamu sekarang, kamu bakal nerima aku apa enggak? Ehehe,” jawabku sambil menahan rasa gugup yang amat sangat.</p>\n<p>“HAHHH? Ini serius kamu nembak aku secara langsung?” Nadia terkekeh kaget. “Hmm... Bakal aku terima ga yaa... Kenapa ga nembak langsung aja, gausah <em>'kalau-kalau'</em>. Coba sekarang tembak aku langsung, ulangin!”</p>\n<p>Muka terasa panas. Malu dan grogi bercampur jadi satu.</p>\n<p>“Duh, malu lagi grogi Nad, sumpah! Wkwk... Ehem. Nad... Mau gak kamu jadi pacar aku? Ehehe...”</p>\n<p>Nadia menggoda dengan tawa jahilnya. “Hmm terima ga yaa... Kalau aku ga nerima gimana? Terus kalau aku terima gimana?”</p>\n<p>“Ya gapapa kalau kamu ga nerima, setidaknya aku udah ngungkapin perasaanku yang udah lama ke kamu. Kalau kamu terima... Ya aku alhamdulillah bangettt,” sahutku jujur.</p>\n<p>Nadia hening sejenak sebelum akhirnya mengucapkan kalimat yang tidak akan pernah kulupakan seumur hidupku:</p>\n<p>“Hmm terima ga yaa... Iya Haris, aku terima kamu.”</p>\n<p>“HAHHHH? Ini serius kan? Aku ga mimpi kan kamu nerima aku? Jadi sekarang kita gimana?” tanyaku panik bercampur bahagia.</p>\n<p>“Iya lah serius! Ya kali aku bohong, wkwk. Kenapa masih nanya gitu, kamu gamau aku terima?”</p>\n<p>“Ya mau lah! Siapa yang gamau diterima sama cewek yang aku suka dari kelas 7 baru aku sampein sekarang! Jadi kita sekarang pacaran nih?”</p>\n<p>“Iya dongg! Kita sekarang udah pacaran. Jadi sekarang kamu udah jadi pacar aku, dan aku udah jadi pacar kamu!”</p>\n<p>Di sepanjang sisa perjalanan pulang hari itu, dunia seolah milik kami berdua. Nadia melingkarkan tangannya di pinggangku, memelukku erat dari belakang. Rasa bahagianya meluap hingga tak bisa dilukiskan dengan kata-kata.</p>\n<p>Hari itu, 17 Maret 2020, kisah perjalanan kami resmi dimulai.</p>"
+    },
+    {
+        "id": 2,
+        "title": "Jalanan, Papeda, dan Kenangan di Atas Beat",
+        "date": "2020–2021",
+        "location": "Kenangan Masa SMP",
+        "content": "<p>Sejak tanggal 17 Maret 2020 itu, hari-hariku yang tadinya biasa saja berubah menjadi warna-warni yang selalu kunanti. Dunia seakan runtuh dari masalahnya sendiri, dan yang tersisa hanya aku dan Nadia di atas motor Beat kesayanganku, menyusuri sudut-sudut jalanan kota tanpa tujuan yang jelas.</p>\n<p>Kami punya satu kebiasaan kecil yang lambat laun menjadi ritual wajib: berburu papeda. Dari sekian banyak jajanan, papeda pinggir jalan adalah makanan favorit Nadia sejak awal kami jadian. Kami sering duduk berdua di atas motor yang terparkir, menikmati gulungan papeda hangat dengan bumbu gurih manis.</p>\n<p>Saking seringnya kami membeli jajanan itu, abang penjual papeda sampai hafal luar kepala dengan wajah kami berdua.</p>\n<p>\"Lho, Mas? Kok sendirian aja? Mbaknya ke mana?\" tanyak bapak penjual papeda suatu hari ketika aku membeli sendirian tanpa Nadia.</p>\n<p>Begitu pun sebaliknya. Kalau Nadia yang datang sendiri, pertanyaan yang sama pasti terlontar. Kami adalah satu paket yang tak terpisahkan di mata pedagang kecil itu.</p>\n<p>Di awal masa pacaran, hubungan kami memang masih dirahasiakan dari orang tua masing-masing. Maklum, kami masih tergolong sangat muda dan takut dimarahi. Namun, lambat laun rahasia kecil itu terbongkar juga. Beruntung, alih-alih ditolak, kedua keluarga kami justru memberi restu dengan hangat.</p>\n<p>Sejak saat itu, setiap kali pulang sekolah, tugas utamaku adalah mengantar Nadia pulang. Aku paling suka mampir dan duduk ngobrol di rumahnya. Di sana, ada sosok Uti yang sangat perhatian padaku.</p>\n<p>\"Ris, sudah makan belum? Kalau belum makan, jangan pulang dulu. Makan di sini sama Nadia,\" ucap Uti setiap kali melihatku berdiri di depan pintu.</p>\n<p>Uti selalu memasakkan makanan hangat untuk kami. Dan dari semua menu masakan Uti, ada satu kombinasi sederhana yang sampai kapan pun tidak akan pernah bisa kutandingi lezatnya: tempe goreng dan sambal terasi. Masakan itu selalu berhasil membuatku merasa memiliki rumah kedua.</p>\n<p>Tidak mau kalah, aku juga mengenalkan Nadia ke keluarga besarku. Nadia dengan sifatnya yang manis, sopan, dan ceria dengan sangat cepat mencuri hati semua orang di rumahku. Keluargaku begitu menyayanginya, memperlakukannya bukan sekadar sebagai tamu atau teman dekatku, melainkan sebagai bagian dari anggota keluarga sendiri.</p>\n<p>Tentu saja, tidak ada hubungan yang mulus tanpa kerikil. Kami adalah dua remaja yang masih sama-sama belajar mengendalikan emosi. Pertengkaran-pertengkaran kecil sering terjadi—mulai dari masalah terlambat memberi kabar, hingga rasa cemburu yang tiba-tiba datang.</p>\n<p>Jujur saja, di balik rasa cintaku yang begitu besar, aku adalah sosok yang sangat posesif. Aku tidak bisa membayangkan Nadia pergi ke mana-mana tanpa aku. Rasa takut kehilangan yang berlebihan itu terkadang membuatku mengekangnya, hingga timbul rasa bersalah di dalam draf pikiranku sendiri.</p>\n<p>Pernah di suatu masa, sebuah pertengkaran hebat memecahkan keharmonisan kami. Aku punya satu prinsip tegas: aku sangat tidak menyukai perempuan yang merokok. Suatu hari, Nadia yang sedang tertekan dan banyak pikiran mengirimkan sebuah video singkat. Di video itu, dia sedang memegang dan mengisap rokok.</p>\n<p>Darahku mendidih seketika. Emosi yang membakar dada membuat kepalaku dingin hilang arah. Ketika kami bertemu dan aku mencoba memberitahunya dengan nada tinggi, dia tetap ngeyel. Tanpa sadar, jemariku melayang—sebuah tamparan keras mendarat di mulutnya.</p>\n<p>Malam itu, penyesalan langsung menghantamku. Kami memutuskan untuk putus.</p>\n<p>Setelah putus, Nadia sempat kembali dekat dengan mantan kekasihnya. Melihat itu dari kejauhan, dadaku sesak oleh cemburu dan rasa amarah pada diri sendiri. Sebagai bentuk pelampiasan emosi, aku melampiaskannya ke jalanan. Motor Beat-ku kubongkar, knalpotnya kuganti dengan knalpot brong yang bising, dan tampilannya kubuat trondol. Aku meraung-raung di jalanan malam untuk melupakan rasa sakitnya.</p>\n<p>Namun, Takdir ternyata belum selesai menyatukan kami. Setelah emosi mereda, kami memutuskan untuk balikan. Tapi ketika aku menjemputnya pertama kali setelah balikan, Nadia berdiri di depan rumah sambil melipat tangan di dada. Matanya menatap sinis ke arah knalpot bisingku.</p>\n<p>\"Aku gak mau naik! Ganti dulu knalpotnya!\" tegasnya sambil membalikkan badan dan berjalan kaki pulang.</p>\n<p>Melihat dia ngambek dan rela berjalan kaki, aku sadar betapa bodohnya aku. Hari itu juga, aku membawa motor itu ke bengkel, merapikan kembali tampilannya menjadi standar dan rapi (<em>proper</em>). Ketika motor itu kembali halus suaranya, senyum manis Nadia kembali memancar. Kami pun kembali menyusuri jalanan dengan bahagia.</p>\n<p>Hingga hari wisuda perpisahan SMP itu tiba.</p>\n<p>Beberapa hari sebelum wisuda, aku menjual motor Beat penuh kenangan itu tanpa memberi tahu Nadia sama sekali. Hasil jualnya kubelikan sebuah motor Vario. Saat gladi bersih wisuda, aku sengaja memakai Vario tersebut, tapi Nadia belum sadar kalau motor Beat-ku sudah berganti milik.</p>\n<p>Barulah di hari H wisuda, saat acara kelulusan selesai dan kami berputar-putar menikmati keliling kota dengan baju wisuda yang masih melekat, Nadia baru tersadar.</p>\n<p>\"Lho, Dutt... Kok dari kemarin kamu pake Vario terus? Motor Beat kamu yang kemarin ke mana?\" tanyanya dari jok belakang, menepuk bahuku.</p>\n<p>\"Udah tak jual, ayy. Ini aku ganti Vario,\" jawabku santai.</p>\n<p>Seketika itu juga, motor rasanya oleng karena Nadia melepas pelukannya dan mengomeli kepalaku dari belakang!</p>\n<p>\"Kenapa sih gak bilang-bilang ke aku kalau Beat-nya dijual?! Aku tuh sayang banget tahu sama motor itu! Di motor itu kita punya banyak banget kenangan dari awal jadian! Kenapa harus dijual?!\" cerocosnya dengan nada tinggi penuh kekesalan.</p>\n<p>\"Kan Vario lebih enak dan mulus, aayy...\" belaku sambil tertawa kecil.</p>\n<p>\"Tapi kan bagus Beat yang kemarin! Apa sih bagusnya Vario ini sampai kamu bela-belain jual motor kenangan kita demi motor ini?!\"</p>\n<p>Selama dua hari penuh setelah wisuda, Nadia <em>badmood</em> parah padaku hanya gara-gara motor Beat itu. Di balik kekesalannya yang menggelikan itu, hatiku justru hangat. Sungguh lucu memikirkan bagaimana seorang cewek yang awalnya tidak suka aku merawat motor, ternyata begitu mencintai dan menjaga kenangan dari sebuah motor tua tempat kami pertama kali menganyam cinta.</p>"
+    },
+    {
+        "id": 3,
+        "title": "Hujan di Jember dan Kembalinya Rumah yang Hilang",
+        "date": "Masa SMK dan PKL di Jember",
+        "location": "Jember",
+        "content": "<p>Lulus dari SMP ternyata menjadi awal dari keretakan yang tak pernah kubayangkan. Memasuki jenjang SMA dan SMK, kami terpisah sekolah. Lingkungan baru, teman-teman baru, dan jarak yang bertambah perlahan-lahan mengikis komunikasi kami.</p>\n<p>Di semester pertama SMK, hubungan yang sudah kami bangun dengan susah payah itu akhirnya runtuh. Kami putus.</p>\n<p>Duniaku mendadak gelap. Aku gagal <em>move on</em> total. Rasa kehilangan Nadia membuat kehidupanku berubah liar. Aku tak lagi peduli pada keteraturan. Hobi motorku yang dulunya hanya sekadar ganti spion, kini merambah ke korek mesin spek tinggi. Malam-malamku dihabiskan di jalanan kota, adu kecepatan dalam balap liar. Bau oli beradu dengan asap rokok yang mulai kuraba, hingga rasa pahit minuman beralkohol yang perlahan jadi pelarian.</p>\n<p>Satu tahun berlalu dalam kehampaan. Nadia sudah memiliki kekasih baru satu sekolah dengannya, sementara aku mencoba membuka hati untuk cewek lain. Tapi rasanya jauh berbeda. Setiap hubungan baru yang kucoba bangun selalu kandas dalam hitungan minggu. Tidak ada yang bisa menggantikan posisi Nadia.</p>\n<p>Hingga saat duduk di kelas 3 SMK, bulan Agustus mengharuskan aku pergi ke Jember untuk menjalani Praktek Kerja Lapangan (PKL). Kehidupan malam di Jember membuatku semakin tenggelam dalam pelarian.</p>\n<p>Sampai pada suatu malam di bulan September.</p>\n<p>Di sebuah sudut kontrakan di Jember, aku minum bersama teman-teman hingga setengah sadar. Dalam kondisi kepala berat dan kesadaran yang tersisa separuh, tanganku meraba ponsel. Ntah keberanian atau kerinduan gila dari mana, jemariku mengetik pesan WhatsApp ke nomor Nadia.</p>\n<p>_“Kamu ada di mana, Nad? Aku kangen banget...”_&#x20;ketikanku amburadul, penuh <em>typo</em> tak beraturan.</p>\n<p>Setibanya pagi, aku terbangun dengan kepala pusing luar biasa. Saat membuka HP, jantungku hampir melompat keluar melihat ada balasan pesan dari Nadia.</p>\n<p><em>“Tiba-tiba banget kamu kenapa? Kamu habis minum ya?”</em></p>\n<p>Jujur, aku tak bisa berbohong. Aku mengaku padanya bahwa malam itu aku mabuk. Dari kejujuran konyol itulah, tawa dan obrolan yang sudah hilang selama lebih dari satu setengah tahun mendadak cair kembali. Kami mulai sering berinteraksi lagi.</p>\n<p>Beberapa minggu kemudian, ada sebuah acara kompetisi tari di kota. Nadia yang tidak memiliki kendaraan menghubungi aku. Tanpa berpikir dua kali, aku menjemput dan mengantarnya. Sejak hari itu, setiap ada acara tari, aku selalu menjadi pengawal setianya, mendukung penuh hobinya.</p>\n<p>Hingga suatu malam, sepulang dari mendampinginya di lomba tari, aku menghentikan motor di pinggir jalan yang sepi. Angin malam merasuk hingga ke tulang.</p>\n<p>\"Nad... Kita balikan yuk?\" bisikku penuh harapan.</p>\n<p>Nadia menunduk. Ada keraguan terpancar dari matanya. \"Tapi Haris... Masa lalu kita...\"</p>\n<p>\"Gak usah dipikirin masa lalu, Nad,\" potongku cepat sambil menatap matanya dalam-dalam. \"Kita sama-sama punya kesalahan di masa lalu. Aku gak peduli itu semua. Yang penting sekarang aku mau kamu balik. Jawab ajakan balikanku sesuai apa yang diinginkan hati kamu.\"</p>\n<p>Matanya mulai berkaca-kaca. Detik berikutnya, air mata Nadia menetes, dan aku pun tak sanggup menahan tangisku sendiri. Di atas motor malam itu, setelah satu setengah tahun saling mengasingkan diri, kami kembali berpelukan. Nadia mengangguk pelan. Kami balikan.</p>\n<p>Namun, balikan kali ini tak semudah dulu. Hubungan kami tak lagi mendapat restu hangat seperti masa SMP. Seorang temannya telah menceritakan insiden tamparan di masa lalu kepada keluarganya tanpa paham konteksnya. Akibatnya, kami harus berpacaran secara sembunyi-sembunyi.</p>\n<p>Jika dulu aku yang selalu menghampirinya, kini Nadia yang berjuang naik motor menyamperin aku ke Jember. Kami berdua bersepakat pada satu janji baru: <em>tidak boleh ada kekerasan saat emosi, dan harus saling jujur.</em></p>\n<p>Banyak kenangan manis baru yang terukir di Jember. Dari jajan kuliner yang belum pernah kurasakan sebelumnya, hingga warung prasmanan Garahan yang jadi tempat makan favorit kami—terutama menu sambal terong udang telur kesukaannya.</p>\n<p>Tapi dari sekian banyak momen manis di masa PKL itu, ada satu malam hujan yang tak akan pernah kulupakan.</p>\n<p>Saat itu, Nadia sangat membutuhkan sebuah ponsel tipe lama yang sudah tidak diproduksi lagi untuk keperluan ujian sekolah keesokan harinya. Aku membawanya menyusuri sudut-sudut kota, mendatangi toko HP satu per satu hingga akhirnya kami menemukan ponsel itu di sebuah toko kecil.</p>\n<p>Saat kami berjalan pulang, langit Jember tiba-tiba tumpah. Hujan deras mengguyur tanpa ampun. Aku mengarahkan motor ke kost-an untuk mengambil jas hujan, namun sayang, mantelku tertinggal di rumah. Beruntung, temanku di kost mau meminjamkan jas hujannya.</p>\n<p>Tanpa ragu, kupasangkan jas hujan itu ke tubuh Nadia.</p>\n<p>\"Kamu pakai ini ya, ayy,\" kataku.</p>\n<p>\"Terus kamu gimana?\" tanya Nadia cemas.</p>\n<p>\"Aku gampang, udah jalan aja,\" jawabku sambil tersenyum.</p>\n<p>Sepanjang perjalanan menembus hujan deras, aku basah kuyup dan menggigil kedinginan, sementara Nadia terlindung rapat di belakangku. Di pertengahan jalan, tiba-tiba terdengar suara tangis sesenggukan dari balik punggungku. Nadia memeluk pinggangku erat-erat.</p>\n<p>\"Gendutt... aayy minta maaf ya...\" tangisnya pecah di tengah deru hujan. \"Gara-gara nurutin kemauan aayy cari HP, gendut jadi hujan-hujanan kedinginan begini... Aayy minta maaf ya, Dutt...\"</p>\n<p>Aku menghentikan motor sejenak di tepi jalan, menoleh ke belakang sambil tersenyum menatap wajahnya yang basah oleh air mata.</p>\n<p>\"Gapapa sayang... Cuma hujan doang, aman kok. Udah gausah nangis ya?\"</p>\n<p>Nadia makin mengencangkan pelukannya. \"Makasih banyak ya, Gendutt... Makasih...\"</p>\n<p>Di balik dinginnya air hujan yang menusuk kulit, dadaku terasa begitu hangat. Sesayang itu dia padaku, dan sesayang itu pula aku padanya. Kami telah menemukan kembali rumah kami yang sempat hilang.</p>"
+    },
+    {
+        "id": 4,
+        "title": "Ulang Tahun, Panggilan Sayang, dan Badai Tanpa Tanda",
+        "date": "Masa Setelah PKL",
+        "location": "Rumah dan Perjalanan Takdir",
+        "content": "<p>Setelah masa-masa PKL di Jember selesai, aku kembali ke rumah. Kami tak lagi harus terpisah jarak. Hampir setiap hari kami menghabiskan waktu bersama.</p>\n<p>Ada masa-masa sulit di mana dompetku benar-benar kosong melompong. Suatu hari, Aayy ngajakin jalan keluar. Karena malu tak punya uang, aku beralasan sedang sibuk. Tapi dasar Nadia, dia malah tiba-tiba datang ke rumah dan tanpa sengaja menemukan dompetku yang kosong.</p>\n<p>\"Dutt! Kamu bohong ya bilang sibuk?!\" omelnya sambil memegang dompetku yang meliuk tipis. \"Bilang aja kalau ga ada uang! Gausah pake alasan sibuk segala!\"</p>\n<p>Hari itu, dia memaksa membawaku jalan-jalan dan makan dengan uangnya sendiri. Selama aku belum punya rezeki, Aayy yang selalu pasang badan mendatangkan makanan. Sebaliknya, kalau aku lagi ada rezeki, seluruh pin ATM dan M-Banking-ku kuubah menggunakan tanggal lahirnya. Setiap kali berbelanja atau jajan, kubiarkan dia memegang dompetku bebas membeli apa saja. Kami saling melengkapi dalam hal apa pun.</p>\n<p>Bahkan bagi Mama dan Bapak, Nadia bukan lagi sekadar pacar anak laki-lakinya. Nadia sudah dianggab seperti anak kandung sendiri. Kalau Aayy main ke rumah, kamar dan bajuku mendadak dikuasai olehnya. Aku dan Mama justru yang tidur di luar agar Aayy bisa istirahat nyaman setelah pulang kerja.</p>\n<p>\"Dutt, aku ketiduran di kamarmu ya...\" bisiknya kalau sudah kelelahan. Tak jarang aku pulang ke rumah, tiba-tiba melihat motornya terparkir dan Aayy sudah tidur nyenyak di kamar sambil ngiler. Lucu sekali.</p>\n<p>Satu kenangan yang paling berbekas adalah saat ulang tahunku. Sepanjang hidupku, aku belum pernah benar-benar merayakan ulang tahun dengan tiup lilin dan kue tart. Tapi Aayy mengubah segalanya.</p>\n<p>Hari itu, Aayy merencanakan kejutan rahasia bersama Mama dan teman-temannya. Tanpa sedikit pun bocor, setelah aku keluar dari kamar mandi, tiba-tiba kamarku sudah dipenuhi teman-teman dan keluarga. Aayy berdiri di tengah membawa kue tart dengan lilin yang menyala.</p>\n<p>\"Selamat ulang tahun, Gendutt!\" serunya dengan senyum paling manis.</p>\n<p>Setelah masa-masa PKL di Jember selesai, kehidupan kuliah membawa kami kembali berdekatan.</p>\n<p>\"Dutt... Minta uang seribu dong, mau beli sosis di depan,\" ucap Aayy tiba-tiba muncul di depan kamar rumahku pagi-pagi, padahal aku baru saja terbangun dari tidur. Lucu sekali melihat tingkah randomnya yang sering mendadak minta diantar jajan atau sekadar menumpang sarapan sebelum ngacir pulang lagi.</p>\n<p>Di mata orang tuaku, Aayy bukan lagi sekadar pacarku. Ibuku bahkan lebih sering membela Aayy dibanding membela anak kandungnya sendiri. Kamarku sering dikuasai oleh dia ketika dia lelah sepulang kerja atau kuliah.</p>\n<p>\"Dutt, kamarmu tak pakai tidur sebentar ya, capek banget,\" pamitnya manis sebelum akhirnya tertidur lelap di kasurku.</p>\n<p>Aayy adalah orang pertama dalam hidupku yang merayakan ulang tahunku secara meriah. Dia menyusun rencana rahasia bersama Ibuku dan teman-temanku. Saat aku keluar dari kamar mandi, tiba-tiba kamar sudah dipenuhi orang-orang tersayang, lengkap dengan kue ulang tahun, lilin, dan kado-kado yang sangat berguna untukku—sabuk, dompet, hingga pembersih muka.</p>\n<p>\"Selamat ulang tahun ya, Genduttt...\" bisiknya lembut sambil tersenyum manis saat aku meniup lilin.</p>\n<p>Bahkan ketika aku mengikuti <em>event drag race</em> satu bulan sebelum hari ulang tahunnya, Aayy dengan setia mendampingiku di bengkel. Dalam kondisi keuangan pas-pasan, dia menyuapiku makan di sela-sela aku membongkar mesin motor, dan membantuku memegang <em>timer</em> saat mengetes setelan motor sambil makan es krim.</p>\n<p>\"Semangat ya sayangg ngereset motornya!\" soraknya ceria.</p>\n<p>Semua rencana masa depan sudah kurancang bersama dia. Kami bahkan sudah berangan-angan tentang langkah-langkah hidup yang akan kami jalani setelah lulus kuliah nanti.</p>\n<p>Namun... takdir berkehendak lain. Sebuah badai hitam datang meremukkan segala impian itu tanpa peringatan.</p>\n<p>Sore itu, komunikasi kami mendadak berubah dingin. Dia tiba-tiba meminta putus tanpa alasan yang jelas. Aku menolak keras. Aku tahu ada sesuatu yang sangat tidak beres sedang terjadi padanya.</p>\n<p>Hingga akhirnya, kebenaran pahit itu terungkap. Sebuah kenyataan mengerikan yang merobek dadaku sampai hancur tak berbekas: Aayy ternyata hamil akibat menjadi korban pemerkosaan seorang pria tak bertanggung jawab.</p>\n<p>Saat mendengar kabar itu dari mulutnya, duniaku runtuh seketika. Tubuhku gemetar hebat, dadaku sesak hingga sulit bernapas. Malam itu, di atas sajadah, air mataku tumpah tak terbendung. Aku bersujud sambil menangis histeris, memohon perlindungan untuk wanita yang sangat aku cintai.</p>\n<p>Aku tidak membencinya. Sedikit pun tidak. Rasa cintaku pada dia jauh lebih besar daripada musibah kelam yang menimpanya.</p>\n<p>\"Aayy... Aku gak akan kemana-mana. Aku tetap di sini sama kamu,\" bisikku lirih di telepon, menegaskan bahwa aku akan tetap memeluk dan menerimanya.</p>\n<p>Namun, keluarga dia berada di bawah tekanan besar dari norma dan lingkungan. Mereka memaksa dia untuk dinikahkan secara siri dengan pria tersebut. Dia berontak. Dia sangat tidak mau. Aayy bahkan sempat kabur dari rumah selama sehari demi mempertahankan cintanya padaku dan menolak pernikahan paksa itu.</p>\n<p>Tapi dia hanyalah seorang cewek yang tak berdaya menghadapi tekanan keluarganya. Dia ditipu dan dipaksa kembali. Momen-momen itu menjadi neraka baginya.</p>\n<p>\"Dutt... Perutku sakit banget... Pintu kamarku didobrak, tangan dan badanku dipegangin dipaksa...\" aduh dia lewat pesan singkat dengan kondisi fisik yang terus melemah karena kekurangan darah di usia kandungan yang sudah menginjak 8 bulan.</p>\n<p>Tangisku pecah membaca setiap pesan penderitaannya. Aku ingin berlari menyelamatkannya, memeluknya, dan membawanya pergi jauh, tapi tanganku terikat oleh kenyataan bahwa aku tak punya kuasa di mata keluarganya.</p>\n<p>Dia dipaksa menjalani akad siri. Namun, kami berdua sempat berpegangan pada satu janji terakhir: <em>keluarganya berjanji setelah bayi itu lahir, mereka akan berpisah, dan dia akan kembali padaku.</em></p>\n<p>Ternyata, janji itu kembali menjadi kebohongan besar. Tanpa sepengetahuan dia dan aku, rencana akad sah secara hukum telah disusun rapi oleh keluarga mereka.</p>\n<p>H-1 sebelum akad sah itu dilaksanakan, Aayy menghubungiku untuk terakhir kalinya. Suaranya terdengar pasrah dan hancur.</p>\n<p>\"aay mau pamitan sayang… maaf klo aay gbisa tetep berdiri di omongan aay di awal ya, banyak alasan knpa aay milih buat nyerah tapi kmu gausah tau, bahkan setelah ini km benci aku juga gapapa dari awal memang ini salah ku, sehat sehat ya gendut, buat cerita yang lebih baik setelah ini, doa aay ga pernah jelek buat gendut, aay liat gendut tadi itu jawaban dari doa aay semalam aay lega bisa liat gendut meskipun dari jauh, sekali lagi maafin aay ya, lanjutin hidup gendut lebih baik lagi, aay yakin km pasti bisa\"</p>\n<p>“jangan pernah tinggalin sholat ya… pertahanin sholat nya, cuma ini yang bisa aku sampein, makasihh bnyak buat semuanya.”</p>\n<p>Hari itu, separuh jiwaku seperti direnggut paksa dari raga. Segala janji untuk terus bertahan runtuh seketika. Kami yang dulunya saling melengkapi dan menjadi rumah bagi satu sama lain, mendadak dipaksa menjadi dua orang asing yang tak lagi boleh menyapa.</p>"
+    },
+    {
+        "id": 5,
+        "title": "22 Oktober 2026 — Rumah yang Tetap Kudoakan",
+        "date": "22 Oktober 2026",
+        "location": "Hari Ini",
+        "content": "<p>Hari ini, tanggal 22 Oktober 2026.</p>\n<p>Kalender di kamar menunjuk tepat di angka yang selama bertahun-tahun tak pernah kubayangkan akan terasa sesesak ini. Hari ini adalah Hari Perkiraan Lahir (HPL)—hari di mana seharusnya aku menjadi orang pertama yang berdiri di sampingnya, menguatkan jemarinya, dan menyambut hadirnya buah hati dengan penuh sukacita.</p>\n<p>Tapi takdir menuliskan kisah yang berseberangan. Aku di sini, duduk sendirian di sudut kamar yang dulu pernah dipenuhi gelak tawa dan aroma tubuhnya. Kamar tempat ia biasa tertidur lelap sepulang kerja, tempat di mana Mama selalu membela Aayy dibanding anak kandungnya sendiri.</p>\n<p>Sejak hari H-1 sebelum akad sah itu dilaksanakan—momen saat Aayy pamit dengan suara yang runtuh—duniaku seolah kehilangan arah. Semua impian, rencana masa depan, masa perkuliahan, hingga setiap sudut kota Jember dan Bondowoso yang pernah kami jelajahi bersama, mendadak terasa seperti jejak-jejak asing.</p>\n<p>Setiap malam, tak ada lagi <em>sleepcall</em> atau pesan manja:</p>\n<p><em>\"Dutt... Minta uang seribu dong mau beli sosis...\"</em></p>\n<p><em>\"Dutt, kamarmu tak pakai tidur ya...\"</em></p>\n<p><em>“Dutt, ayo nonton”</em></p>\n<p><em>“Dutt, cepet pulang aayy ngantuk udah hampir jam 12”</em></p>\n<p><em>“Dutt, kamu kemana sihh dari tadi”</em></p>\n<p><em>“Dutt, aayy nitip nasi garahan dongg”</em></p>\n<p><em>“Dutt, anak ini ya kalo di bilangin”</em></p>\n<p><em>“Dutt, kamu sayang aku nggakk?”</em></p>\n<p><em>“Dutt, kamu mau kemana? Aayy mau ikott… ehehe”</em></p>\n<p><em>“Dutt, beli mie ayam yokk”</em></p>\n<p><em>“Dutt, beli soto ayokk”</em></p>\n<p><em>“Dutt, sepedaan yokk”</em></p>\n<p><em>“Dutt, pijetin pinggang aayy… ehehe”</em></p>\n<p><em>“Dutt, aayy jatoh tadi naik sepeda”</em></p>\n<p><em>“Dutt, aayy kepeleset tadi jatoh”</em></p>\n<p><em>“Dutt, aayy capekk mau pelukk…”</em></p>\n<p><em>“Dutt, aayy ada tugas ppt tolong buatin dong… ehehe”</em></p>\n<p><em>“Dutt, aayy sedihh mau nangiss ke gendutt”</em></p>\n<p><em>“Dutt, gendut kapan pulangg? aayy kangen sama gendutt…”</em></p>\n<p><em>“Dutt, nanti kita kesana yaa…”</em></p>\n<p><em>“Dutt, aayy punya makanan gendut mau nggak?”</em></p>\n<p><em>“Dutt, nihh makan gendut aayy udah gamau…”</em></p>\n<p>Yang tersisa hanya hening yang bising. Setiap kali sujud di atas sajadah, air mataku tumpah tanpa bisa ditahan. Ada bagian dari ragaku yang terbawa pergi bersamanya. Aku merasa hancur, bingung, dan kehilangan penunjuk jalan untuk melanjutkan hidup—karena selama bertahun-tahun, arah hidupku selalu bermuara pada satu nama: Nadia.</p>\n<p>Aku tidak tahu bagaimana kabar dia hari ini. Apakah proses persalinannya berjalan lancar? Apakah sakit di perut dan rasa lemah karena kekurangan darah itu sudah terlewati?</p>\n<p>Meski keadaan memaksa kami menjadi dua orang asing yang dipisahkan oleh dinding takdir dan keputusan keluarga, hatiku tak pernah sedikit pun membencinya. Rasa cinta, ketulusan, dan rasa hormatku pada perjuangannya tidak berkurang walau seujung kuku.</p>\n<p>Di balik garis hari ini—22 Oktober 2026—aku memejamkan mata, memanjatkan doa paling tulus yang sanggup diucapkan oleh seorang pria yang kehilangan rumahnya:</p>\n<blockquote class=\"my-6 border-l-4 border-amber-600 pl-4 italic text-amber-900 dark:text-amber-200\"><em>\"Ya Allah... Di mana pun Aayy berada hari ini, lindungilah dia. Kuatkan fisiknya, hapuskan rasa sakitnya, dan selamatkan dia beserta bayi yang dilahirkannya. Jika memang jalan hidupku tak lagi bisa bersisian dengannya, jadikanlah dia wanita yang paling bahagia dan terlindungi di bumi-Mu ini...\"</em></blockquote>\n<p>Kisah kami mungkin terhenti di babak yang sangat menyakitkan. Tapi kenangan tentang motor Beat tua, gurihnya papeda, hangatnya sambal terasi Uti, hujan-hujanan di Jember, hingga panggilan <em>\"Dutt\"</em> dan <em>\"Aayy\"</em> akan tetap tersimpan rapi sebagai bagian terindah dalam perjalanan hidupku.</p>\n<p>Terima kasih pernah menjadi rumah terbaik, Aayy. Dari Haris, Gendutmu.</p>"
+    }
+];
+
+        /* ----------------------------------------------------
+           2. SCRAPBOOK / GALLERY DATA
+        ---------------------------------------------------- */
+        const scrapbookData = [
+    {
+        "title": "17 Maret 2020",
+        "desc": "Hari ketika Haris akhirnya mengungkapkan perasaannya kepada Nadia dan kisah mereka dimulai.",
+        "icon": "fa-heart"
+    },
+    {
+        "title": "Papeda Pinggir Jalan",
+        "desc": "Jajanan favorit Nadia yang menjadi ritual kecil dan kenangan manis mereka.",
+        "icon": "fa-utensils"
+    },
+    {
+        "title": "Motor Beat Penuh Kenangan",
+        "desc": "Motor pertama yang menemani perjalanan cinta mereka sejak awal jadian.",
+        "icon": "fa-motorcycle"
+    },
+    {
+        "title": "Rumah Kedua",
+        "desc": "Kehangatan Uti, tempe goreng, sambal terasi, dan keluarga yang menerima mereka.",
+        "icon": "fa-house"
+    },
+    {
+        "title": "Hujan di Jember",
+        "desc": "Satu jas hujan, perjalanan mencari ponsel, dan pelukan di tengah derasnya hujan.",
+        "icon": "fa-cloud-showers-heavy"
+    },
+    {
+        "title": "Ulang Tahun Gendut",
+        "desc": "Kejutan sederhana dari Nadia, Mama, dan teman-teman yang tak terlupakan.",
+        "icon": "fa-cake-candles"
+    },
+    {
+        "title": "Doa untuk Aayy",
+        "desc": "22 Oktober 2026 menjadi hari penuh harap, kehilangan, dan doa terbaik untuk Nadia.",
+        "icon": "fa-hands-praying"
+    }
+];
+
+        /* ----------------------------------------------------
+           3. APP STATE & INITIALIZATION
+        ---------------------------------------------------- */
+        let currentChapterIndex = 0;
+        let fontSizePercentage = 100;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderChapterList();
+            openChapter(0);
+            renderScrapbook();
+
+            // Progress bar listener
+            window.addEventListener('scroll', updateProgressBar);
+        });
+
+        /* ----------------------------------------------------
+           4. CHAPTER READER LOGIC
+        ---------------------------------------------------- */
+        function renderChapterList() {
+            const container = document.getElementById('chapter-list');
+            container.innerHTML = chaptersData.map((ch, idx) => `
+                <button onclick="openChapter(${idx})" class="w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center justify-between text-xs md:text-sm ${idx === currentChapterIndex ? 'bg-amber-800 text-amber-50 font-semibold shadow-md' : 'hover:bg-sand-200 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300'}">
+                    <span class="truncate"><strong class="mr-1">Bab ${ch.id}:</strong> ${ch.title}</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] opacity-60"></i>
+                </button>
+            `).join('');
+        }
+
+        function openChapter(index) {
+            currentChapterIndex = index;
+            const ch = chaptersData[index];
+
+            // UI Updates
+            document.getElementById('current-chapter-num').innerText = `Bab ${ch.id} dari 5`;
+            document.getElementById('current-chapter-title').innerText = ch.title;
+            document.getElementById('current-chapter-date').innerText = ch.date;
+            document.getElementById('current-chapter-location').innerText = ch.location;
+            document.getElementById('chapter-content-text').innerHTML = ch.content;
+            document.getElementById('page-indicator').innerText = `${ch.id} / ${chaptersData.length}`;
+
+            // Buttons enable/disable
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('next-btn').disabled = index === chaptersData.length - 1;
+
+            renderChapterList();
+
+            // Auto scroll gentle into view if on mobile
+            if (window.innerWidth < 1024 && index !== 0) {
+                document.getElementById('reader-card').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function nextChapter() {
+            if (currentChapterIndex < chaptersData.length - 1) {
+                openChapter(currentChapterIndex + 1);
+            }
+        }
+
+        function prevChapter() {
+            if (currentChapterIndex > 0) {
+                openChapter(currentChapterIndex - 1);
+            }
+        }
+
+        function adjustFontSize(delta) {
+            fontSizePercentage = Math.max(80, Math.min(140, fontSizePercentage + (delta * 10)));
+            document.getElementById('font-size-label').innerText = `${fontSizePercentage}%`;
+            document.getElementById('chapter-content-text').style.fontSize = `${fontSizePercentage}%`;
+        }
+
+        function updateProgressBar() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+        }
+
+        /* ----------------------------------------------------
+           5. SCRAPBOOK GALLERY LOGIC
+        ---------------------------------------------------- */
+        function renderScrapbook() {
+            const grid = document.getElementById('memory-cards-grid');
+            grid.innerHTML = scrapbookData.map(item => `
+                <div class="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-amber-600/40 transition-all shadow-sm hover:shadow-md group">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-400 flex items-center justify-center mb-3 text-base group-hover:scale-110 transition-transform">
+                        <i class="fa-solid ${item.icon}"></i>
+                    </div>
+                    <h4 class="font-title font-bold text-amber-950 dark:text-amber-100 text-sm mb-1">${item.title}</h4>
+                    <p class="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">${item.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        /* ----------------------------------------------------
+           6. THEME MODES LOGIC
+        ---------------------------------------------------- */
+        const themeLightBtn = document.getElementById('theme-light');
+        const themeSepiaBtn = document.getElementById('theme-sepia');
+        const themeDarkBtn = document.getElementById('theme-dark');
+
+        themeLightBtn.addEventListener('click', () => {
+            document.documentElement.classList.remove('dark', 'sepia-mode');
+        });
+
+        themeSepiaBtn.addEventListener('click', () => {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('sepia-mode');
+        });
+
+        themeDarkBtn.addEventListener('click', () => {
+            document.documentElement.classList.remove('sepia-mode');
+            document.documentElement.classList.add('dark');
+        });
+
+        /* ----------------------------------------------------
+           7. MUSIC PLAYER & TRACK SELECTOR LOGIC
+        ---------------------------------------------------- */
+        const tracks = {
+            virgoun: "https://www.youtube.com/embed/nnZpgbJQVXw?autoplay=1&enablejsapi=1",
+            forrevenge: "https://www.youtube.com/embed/QgiZVuQUoHo?autoplay=1&enablejsapi=1"
+        };
+
+        function changeTrack(key) {
+            const iframe = document.getElementById('yt-audio-frame');
+            if (tracks[key]) {
+                iframe.src = tracks[key];
+            }
+        }
+
+        function toggleMusicWidget() {
+            const widget = document.getElementById('music-widget');
+            if (widget.classList.contains('hidden')) {
+                widget.classList.remove('hidden');
+            } else {
+                widget.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
